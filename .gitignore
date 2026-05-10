@@ -1,0 +1,12 @@
+# Python 缓存文件
+__pycache__/
+*.py[cod]
+*$py.class
+
+# 虚拟环境 (如果你以后用的话)
+venv/
+.venv/
+env/
+
+# Mac 系统的隐藏文件 (如果你用 Mac)
+.DS_Store
