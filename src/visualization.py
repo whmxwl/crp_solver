@@ -12,11 +12,16 @@ def plot_evaluation_results(results, num_cnts):
     
     labels = ['基础贪心', '经典 A*', '手动特征 A*']
     colors = ['#FA8072', '#A9A9A9', '#1E90FF'] 
-    x_axis = list(range(1, 9))
     
+    # 提取数据
     c_g, c_a, c_m = results['Greedy']['relocs'], results['Classic_A']['relocs'], results['Manual_A']['relocs']
     t_g, t_a, t_m = results['Greedy']['time'], results['Classic_A']['time'], results['Manual_A']['time']
+    
+    # 【修复点 1】：动态获取真实的测试轮数，而不是写死 8
+    num_tests = len(c_g)
+    x_axis = list(range(1, num_tests + 1))
 
+    # --- 图 1：单次翻箱次数走势 ---
     axs[0, 0].plot(x_axis, c_g, 'o-', color=colors[0], linewidth=2, label=labels[0])
     axs[0, 0].plot(x_axis, c_a, 's--', color=colors[1], linewidth=2.5, label=labels[1])
     axs[0, 0].plot(x_axis, c_m, '^-', color=colors[2], linewidth=3, label=labels[2])
@@ -25,6 +30,7 @@ def plot_evaluation_results(results, num_cnts):
     axs[0, 0].grid(True, linestyle='--', alpha=0.5)
     axs[0, 0].legend()
 
+    # --- 图 2：单次计算耗时走势 ---
     axs[0, 1].plot(x_axis, t_g, 'o-', color=colors[0], linewidth=2, label=labels[0])
     axs[0, 1].plot(x_axis, t_a, 's--', color=colors[1], linewidth=2.5, label=labels[1])
     axs[0, 1].plot(x_axis, t_m, '^-', color=colors[2], linewidth=3, label=labels[2])
@@ -33,7 +39,9 @@ def plot_evaluation_results(results, num_cnts):
     axs[0, 1].grid(True, linestyle='--', alpha=0.5)
     axs[0, 1].legend()
 
-    avg_rates = [sum(c_g)/8/num_cnts*100, sum(c_a)/8/num_cnts*100, sum(c_m)/8/num_cnts*100]
+    # --- 图 3：全局平均翻箱率 ---
+    # 【修复点 2】：算平均值时除以 num_tests，不再除以 8
+    avg_rates = [sum(c_g)/num_tests/num_cnts*100, sum(c_a)/num_tests/num_cnts*100, sum(c_m)/num_tests/num_cnts*100]
     axs[1, 0].bar(labels, avg_rates, color=colors, width=0.45)
     axs[1, 0].set_ylabel('平均翻箱率 (%)', fontweight='bold')
     axs[1, 0].set_title('【全局质量】算法平均翻箱率对比 (越低越好)', fontweight='bold', pad=10)
@@ -41,7 +49,9 @@ def plot_evaluation_results(results, num_cnts):
     for i, v in enumerate(avg_rates):
         axs[1, 0].text(i, v + 1, f"{v:.1f}%", ha='center', va='bottom', fontweight='bold', fontsize=12)
 
-    avg_times = [sum(t_g)/8, sum(t_a)/8, sum(t_m)/8]
+    # --- 图 4：全局平均计算耗时 ---
+    # 【修复点 3】：算平均值时除以 num_tests，不再除以 8
+    avg_times = [sum(t_g)/num_tests, sum(t_a)/num_tests, sum(t_m)/num_tests]
     axs[1, 1].plot(labels, avg_times, 'o-', color=colors[2], linewidth=3, markersize=12)
     axs[1, 1].set_ylabel('平均计算耗时 (秒)', fontweight='bold')
     axs[1, 1].set_title('【全局速度】算法运算效率对比', fontweight='bold', pad=10)

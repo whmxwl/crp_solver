@@ -1,6 +1,7 @@
 # main.py
 import time
 import random
+import argparse
 from src.config import Config
 from src.algorithms import greedy_search, run_a_star
 from src.heuristics import get_classic_heuristic, get_manual_heuristic
@@ -38,10 +39,9 @@ def run_batch_evaluation(bays=5, max_height=5, fill_rate=0.7, num_tests=8):
         results['Manual_A']['relocs'].append(rm)
 
         # 3. 测经典 A*
-        print(f" [Test {i+1}] 手动A*完成，等待经典A* ...")
+        print(f" [Test {i+1}] 手动特征 A* 已极速完成，正在等待经典 A* ...")
         t0 = time.time()
         
-        # 包装一下经典启发式，让它的参数格式与自定义的一致
         classic_wrapper = lambda s, seq_, idx, mh: get_classic_heuristic(s, seq_[idx] if idx < len(seq_) else None)
         rc = run_a_star(state, bays, max_height, seq, classic_wrapper)
         
@@ -51,5 +51,24 @@ def run_batch_evaluation(bays=5, max_height=5, fill_rate=0.7, num_tests=8):
     return results, num_cnts
 
 if __name__ == '__main__':
-    results, num_cnts = run_batch_evaluation()
+    # 1. 初始化解析器
+    parser = argparse.ArgumentParser(description="Container Relocation Problem (CRP) Benchmark Solver")
+    
+    # 2. 添加你想让用户控制的参数
+    parser.add_argument('--bays', type=int, default=5, help='集装箱巷道数量 (默认: 5)')
+    parser.add_argument('--height', type=int, default=5, help='每个巷道的最大高度 (默认: 5)')
+    parser.add_argument('--fill', type=float, default=0.7, help='初始场景满载率 (默认: 0.7)')
+    parser.add_argument('--tests', type=int, default=8, help='测试轮数 (默认: 8)')
+    
+    # 3. 解析终端输入的参数
+    args = parser.parse_args()
+    
+    # 4. 把解析出来的参数传给运行函数
+    results, num_cnts = run_batch_evaluation(
+        bays=args.bays, 
+        max_height=args.height, 
+        fill_rate=args.fill, 
+        num_tests=args.tests
+    )
+    
     plot_evaluation_results(results, num_cnts)
