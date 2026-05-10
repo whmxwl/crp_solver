@@ -34,19 +34,21 @@ def run_batch_evaluation(bays=5, max_height=5, fill_rate=0.7, num_tests=8):
             
         # 2. 测手动特征 A*
         t0 = time.time()
-        rm = run_a_star(state, bays, max_height, seq, get_manual_heuristic)
+        # 【修改点】：用 rm_cost, _ 拆包，只取第一个返回值
+        rm_cost, _ = run_a_star(state, bays, max_height, seq, get_manual_heuristic)
         results['Manual_A']['time'].append(time.time() - t0)
-        results['Manual_A']['relocs'].append(rm)
+        results['Manual_A']['relocs'].append(rm_cost)
 
         # 3. 测经典 A*
         print(f" [Test {i+1}] 手动特征 A* 已极速完成，正在等待经典 A* ...")
         t0 = time.time()
         
         classic_wrapper = lambda s, seq_, idx, mh: get_classic_heuristic(s, seq_[idx] if idx < len(seq_) else None)
-        rc = run_a_star(state, bays, max_height, seq, classic_wrapper)
+        # 【修改点】：用 rc_cost, _ 拆包，只取第一个返回值
+        rc_cost, _ = run_a_star(state, bays, max_height, seq, classic_wrapper)
         
         results['Classic_A']['time'].append(time.time() - t0)
-        results['Classic_A']['relocs'].append(rc)
+        results['Classic_A']['relocs'].append(rc_cost)
         
     return results, num_cnts
 

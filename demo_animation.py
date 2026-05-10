@@ -34,20 +34,32 @@ def draw_state(ax, state, target_seq, max_height):
     ax.set_yticks(range(max_height + 1))
     ax.grid(axis='y', linestyle='--', alpha=0.5)
     
-    # 当前需要出库的箱子编号
-    current_target = target_seq[0] if target_seq else None
+    # 【修复点】：动态找出场地上的真实目标
+    # 1. 扫描当前场地，记录所有还没出库的箱子
+    remaining_containers = set()
+    for bay in state:
+        remaining_containers.update(bay)
+        
+    # 2. 按出库顺序找，第一个还在场地上的就是当前急需出库的 VIP 目标
+    current_target = None
+    for t in target_seq:
+        if t in remaining_containers:
+            current_target = t
+            break
+
     if current_target:
+        # 标题颜色也改成了红色，视觉效果更好
         ax.set_title(f"A* 算法智能倒箱演示 | 当前优先目标: [ 箱号 {current_target} ]", 
-                     fontsize=14, fontweight='bold', pad=20, color='#1E90FF')
+                     fontsize=14, fontweight='bold', pad=20, color='#FF6347')
     else:
-        ax.set_title("🎉 所有集装箱已成功出库！", fontsize=16, fontweight='bold', color='green')
+        ax.set_title("所有集装箱已成功出库！", fontsize=16, fontweight='bold', color='green') 
 
     # 逐个画出集装箱 (使用矩形 Patch)
     box_width = 0.8
     box_height = 0.9
     for bay_idx, bay in enumerate(state):
         for level, container_id in enumerate(bay):
-            # 如果是当前目标箱，给它高亮颜色
+            # 如果是当前目标箱，给它高亮红色
             color = '#FF6347' if container_id == current_target else '#4682B4'
             
             rect = patches.Rectangle(
@@ -59,11 +71,6 @@ def draw_state(ax, state, target_seq, max_height):
             # 在箱子中间写上编号
             ax.text(bay_idx, level + box_height/2, str(container_id), 
                     ha='center', va='center', color='white', fontweight='bold', fontsize=12)
-            
-            # 从目标序列中移除已经在画的箱子（用于判断下一个目标）
-            if container_id in target_seq:
-                target_seq.remove(container_id)
-
 def play():
     plt.rcParams['font.sans-serif'] = ['SimHei']
     plt.rcParams['axes.unicode_minus'] = False
@@ -94,7 +101,8 @@ def play():
     # frames=len(path) 表示总帧数，interval=800 表示每帧停留 0.8 秒
     anim = FuncAnimation(fig, update, frames=len(path), interval=800, repeat=False)
     
-    plt.tight_layout()
+    # 手动分配边距
+    plt.subplots_adjust(top=0.85, bottom=0.1, left=0.05, right=0.95)
     plt.show()
 
 if __name__ == '__main__':
