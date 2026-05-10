@@ -108,7 +108,7 @@ def run_a_star(initial_state: List[List[int]], bays: int, max_height: int, seque
         
         # 终止条件：所有箱子已出库完毕
         if curr.seq_index == len(sequence): 
-            return curr.g
+            return curr.g, reconstruct_path(curr)
             
         target = sequence[curr.seq_index]
         retrieved = False
@@ -145,4 +145,14 @@ def run_a_star(initial_state: List[List[int]], bays: int, max_height: int, seque
                             # 注意：执行了翻箱动作，代价 curr.g + 1
                             heapq.heappush(open_list, Node(new_state, curr.seq_index, curr.g + 1, h, weight, curr))
                         
-    return curr.g + 5 # 如果跑满 25000 次还没找到，给 5 个翻箱的超时惩罚
+    return curr.g + 5, [] # 如果跑满 25000 次还没找到，给 5 个翻箱的超时惩罚
+
+def reconstruct_path(node: Node) -> List[List[List[int]]]:
+    """
+    通过节点的 parent 属性向后回溯，提取出从初始状态到最终状态的完整路径。
+    """
+    path = []
+    while node is not None:
+        path.append(node.state)
+        node = node.parent
+    return path[::-1]  # 因为是倒推的，所以需要反转一下列表
