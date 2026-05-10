@@ -1,19 +1,59 @@
 # Container Relocation Problem (CRP) Solver
 
-这是一个基于 Python 的模块化集装箱倒箱问题 (CRP) 寻路算法求解器。项目对比了基础贪心算法与 A* 搜索算法在不同启发式函数下的求解效率和解的质量。
+This repository provides a modular, Python-based solver for the **Container Relocation Problem (CRP)**. The project benchmarks different search algorithms—specifically a baseline Greedy approach and A* search with varying heuristics—evaluating their computational efficiency and solution quality.
 
-## 🌟 项目特点
+## 🌟 Features
 
-* **模块化设计**：将环境定义、启发式函数、搜索算法高度解耦，易于二次开发。
-* **多算法对比**：内置基础贪心算法、经典弱启发 A* 算法，以及基于三维特征的手动启发式 A* 算法。
-* **自定义启发式**：支持通过调整直接阻碍数、全局倒置数、空间紧缺度等权重来优化寻路效率。
-* **可视化评估**：内置基于 `matplotlib` 的纯公平随机场景压测与多维度数据对比图表。
+* **Modular Architecture**: The environment physics, search algorithms, heuristic functions, and visualization are highly decoupled. This makes the codebase clean and easy to extend for secondary development (e.g., integrating Reinforcement Learning).
+* **Algorithm Benchmarking**: Built-in head-to-head comparisons between:
+  * Baseline Greedy Algorithm
+  * Classic A* Algorithm (Weak heuristic)
+  * Feature-Guided A* Algorithm (Custom multidimensional heuristic)
+* **Customizable Heuristics**: Fine-tune the A* search by adjusting weights for three core spatial features:
+  1. *Direct Obstruction*: The number of containers blocking the current target.
+  2. *Global Priority Inversion*: Severe states where containers needed later are placed on top of containers needed earlier.
+  3. *Space Scarcity*: Penalties for nearly full bays that restrict future movements.
+* **Automated Evaluation & Visualization**: Includes a pure-random scenario stress test that automatically plots performance metrics (relocation counts, computation time, average relocation rates) using `matplotlib`.
 
-## 🚀 快速开始
+## 📂 Project Structure
 
-### 1. 安装依赖
+* `src/config.py`: Core configuration for heuristic weighting parameters.
+* `src/environment.py`: Physical environment rules and state management.
+* `src/heuristics.py`: Classic and custom heuristic evaluation functions.
+* `src/algorithms.py`: Decoupled search algorithms (Greedy, A*).
+* `src/visualization.py`: Matplotlib-based evaluation charting.
+* `main.py`: Main entry point for initializing parameters, running benchmarks, and displaying results.
 
-确保你的环境中已安装 Python 3.x，然后运行以下命令安装所需依赖：
+## 🚀 Getting Started
+
+### Prerequisites
+
+Ensure you have Python 3.x installed on your system.
+
+### 1. Installation
+
+Clone the repository and install the required dependencies:
 
 ```bash
+git clone [https://github.com/whmxwl/crp_solver.git](https://github.com/whmxwl/crp_solver.git)
+cd crp_solver
 pip install -r requirements.txt
+```
+
+### 2. Running the Benchmark
+
+Execute the main script to generate random port/yard scenarios and run the algorithms against each other:
+
+```bash
+python main.py
+```
+
+Upon completion, a comprehensive `matplotlib` dashboard will appear, displaying algorithm performance comparisons across multiple dimensions.
+
+## ⚙️ Configuration
+
+You can easily experiment with the feature-guided A* algorithm's behavior by adjusting the heuristic weights. Open `src/config.py` and modify the following parameters:
+
+* `A_WEIGHT`: Weight for Direct Obstructions (Default: ~1.0).
+* `B_WEIGHT`: Weight for Priority Inversions (Recommended to be high, e.g., 6.0).
+* `C_WEIGHT`: Weight for Space Scarcity (Default: ~0.5).
