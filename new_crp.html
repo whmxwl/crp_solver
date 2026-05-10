@@ -8,7 +8,7 @@
     <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <script>
-        // 【核心修复】：开启 htmlLabels 和 loose 安全模式，让复杂文本和换行符完美渲染
+        // 【核心修复】：开启 htmlLabels 和 loose 安全模式
         mermaid.initialize({ 
             startOnLoad: true, 
             theme: 'default',
@@ -45,10 +45,20 @@
             justify-content: center; 
             margin: 20px 0; 
             width: 100%;
+            /* 添加横向滚动条，防止图表在极小屏幕下被过度挤压变形 */
+            overflow-x: auto; 
+            padding-bottom: 10px;
         }
         .mermaid svg {
             max-width: 100%; 
+            /* 【关键修改】：限制最大高度，让长图自动等比缩小 */
+            max-height: 450px; 
             height: auto; 
+            /* 鼠标悬停时允许放大查看细节（可选的交互提升） */
+            transition: transform 0.3s ease;
+        }
+        .mermaid svg:hover {
+            transform: scale(1.05);
         }
         .gemini-response { line-height: 1.6; }
         .gemini-response p { margin-bottom: 0.75em; }
@@ -63,7 +73,7 @@
     <div class="max-w-5xl mx-auto space-y-12">
         <header class="text-center">
             <h1 class="text-3xl font-bold mb-4">集装箱倒箱问题 (CRP) 算法工作流程图</h1>
-            <p class="text-gray-600">终极修复版：详细代码逻辑解说 + 紧凑学术风排版。</p>
+            <p class="text-gray-600">终极修复版：修复超大尺寸显示 + 代码逻辑解说。</p>
         </header>
 
         <section class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
@@ -81,9 +91,9 @@
                 classDef D fill:#ffffff,stroke:#333,stroke-width:1px,color:#000
                 classDef T fill:#d1d5db,stroke:#333,stroke-width:1px,color:#000
 
-                Start(["开始：初始化场地状态与出库序列"]):::T
+                Start(["开始：初始化场地状态<br/>与出库序列"]):::T
                 CheckEnd{"满足终止条件吗？<br/>1. 所有箱子已出库<br/>2. 达到最大防死循环次数"}:::D
-                GetTarget["获取当前急需出库的目标箱"]:::P
+                GetTarget["获取当前急需出库<br/>的目标箱"]:::P
                 TryRetrieve{"目标箱在巷道最顶层<br/>可以直接出库吗？"}:::D
                 RetrieveSuccess["出库成功：移出该箱<br/>目标序列索引加一"]:::P
                 FindTargetBay["定位目标箱所在巷道<br/>准备移走上方的阻碍箱"]:::P
