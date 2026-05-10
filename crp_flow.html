@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRP 求解算法流程图</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true, theme: 'default' });
+
+        function downloadSVG(containerId, filename) {
+            const container = document.getElementById(containerId);
+            const svg = container.querySelector('svg');
+            if (!svg) {
+                alert("图表仍在渲染中，请稍后再试！");
+                return;
+            }
+            const cloneSvg = svg.cloneNode(true);
+            cloneSvg.setAttribute("xmlns", "http://www.w3.org/2000/svg");
+            const svgData = new XMLSerializer().serializeToString(cloneSvg);
+            const blob = new Blob([svgData], {type: "image/svg+xml;charset=utf-8"});
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement("a");
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+        }
+    </script>
+    <style>
+        .mermaid { display: flex; justify-content: center; margin: 20px 0; overflow-x: auto; }
+        .gemini-response { line-height: 1.6; }
+        .gemini-response p { margin-bottom: 0.75em; }
+        .gemini-response p:last-child { margin-bottom: 0; }
+        .gemini-response strong { color: #581c87; font-weight: 600; }
+        .gemini-response ul { list-style-type: disc; padding-left: 1.5em; margin-bottom: 0.75em; }
+        .gemini-response li { margin-bottom: 0.25em; }
+    </style>
+</head>
+<body class="bg-gray-50 text-gray-800 font-sans p-8">
+
+    <div class="max-w-5xl mx-auto space-y-12">
+        <header class="text-center">
+            <h1 class="text-3xl font-bold mb-4">集装箱倒箱问题 (CRP) 算法工作流程图</h1>
+            <p class="text-gray-600">纯净修复版：使用 UTF-8 编码保存即可完美显示。</p>
+        </header>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h2 class="text-xl font-semibold">1. 基础贪心算法 (Greedy Algorithm)</h2>
+                <div class="flex space-x-3">
+                    <button onclick="explainAlgorithm('greedy', this)" class="bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded text-sm transition-colors border border-purple-200 font-medium">✨ 智能解释</button>
+                    <button onclick="downloadSVG('greedy-chart', '贪心算法流程图.svg')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition-colors">📥 下载 SVG</button>
+                </div>
+            </div>
+            <div id="explain-greedy" class="hidden mb-6 p-5 bg-purple-50 rounded-lg text-sm text-gray-800 border border-purple-100 gemini-response"></div>
+            <div id="greedy-chart" class="mermaid">
+                flowchart TD
+                Start[开始初始化状态]
+                CheckEnd{满足终止条件吗}
+                GetTarget[获取当前需出库目标箱]
+                TryRetrieve{尝试直接出库}
+                RetrieveSuccess[出库成功更新状态]
+                FindTargetBay[定位目标箱所在巷道]
+                FindBestBay[寻找高度最低的目标巷道]
+                CheckValidMove{找到合适巷道吗}
+                MoveBox[执行贪心翻箱动作]
+                EndSuccess[结束并输出总次数]
+                EndFail[无解死胡同]
+
+                Start --> CheckEnd
+                CheckEnd -->|是| EndSuccess
+                CheckEnd -->|否| GetTarget
+                GetTarget --> TryRetrieve
+                TryRetrieve -->|成功| RetrieveSuccess
+                RetrieveSuccess --> CheckEnd
+                TryRetrieve -->|失败| FindTargetBay
+                FindTargetBay --> FindBestBay
+                FindBestBay --> CheckValidMove
+                CheckValidMove -->|否| EndFail
+                CheckValidMove -->|是| MoveBox
+                MoveBox --> CheckEnd
+            </div>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <h2 class="text-xl font-semibold">2. 经典 A* 算法 (Classic A* Search)</h2>
+                <div class="flex space-x-3">
+                    <button onclick="explainAlgorithm('classic', this)" class="bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded text-sm transition-colors border border-purple-200 font-medium">✨ 智能解释</button>
+                    <button onclick="downloadSVG('classic-a-chart', '经典A星算法流程图.svg')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition-colors">📥 下载 SVG</button>
+                </div>
+            </div>
+            <div id="explain-classic" class="hidden mb-6 p-5 bg-purple-50 rounded-lg text-sm text-gray-800 border border-purple-100 gemini-response"></div>
+            <div id="classic-a-chart" class="mermaid">
+                flowchart TD
+                Start[开始搜索]
+                Init[初始化起点加入OpenList]
+                LoopStart{OpenList为空或超时吗}
+                PopNode[弹出代价最小的节点]
+                CheckSeq{全部出库了吗}
+                TryRetrieve{当前能否直接出库}
+                GenRetState[执行出库生成新状态]
+                GenMoveState[执行翻箱生成新状态]
+                CheckRetClosed{新状态已存在吗}
+                CheckMoveClosed{新状态已存在吗}
+                AddRetOpen[计算基础阻碍数加入OpenList]
+                AddMoveOpen[计算基础阻碍数加入OpenList]
+                EndSuccess[回溯并输出最优路径]
+                EndFail[达到上限返回超时惩罚]
+
+                Start --> Init
+                Init --> LoopStart
+                LoopStart -->|是| EndFail
+                LoopStart -->|否| PopNode
+                PopNode --> CheckSeq
+                CheckSeq -->|是| EndSuccess
+                CheckSeq -->|否| TryRetrieve
+                TryRetrieve -->|能出库| GenRetState
+                GenRetState --> CheckRetClosed
+                CheckRetClosed -->|否| AddRetOpen
+                AddRetOpen --> LoopStart
+                CheckRetClosed -->|是| LoopStart
+                TryRetrieve -->|需翻箱| GenMoveState
+                GenMoveState --> CheckMoveClosed
+                CheckMoveClosed -->|否| AddMoveOpen
+                AddMoveOpen --> LoopStart
+                CheckMoveClosed -->|是| LoopStart
+            </div>
+        </section>
+
+        <section class="bg-white p-6 rounded-lg shadow-sm border border-gray-200">
+            <div class="flex justify-between items-center mb-4 border-b pb-2">
+                <div>
+                    <h2 class="text-xl font-semibold">3. 基于多维特征的启发式 A* 算法</h2>
+                </div>
+                <div class="flex space-x-3 flex-shrink-0">
+                    <button onclick="explainAlgorithm('heuristic', this)" class="bg-purple-100 hover:bg-purple-200 text-purple-700 px-4 py-2 rounded text-sm transition-colors border border-purple-200 font-medium">✨ 智能解释</button>
+                    <button onclick="downloadSVG('heuristic-a-chart', '启发式A星算法流程图.svg')" class="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded text-sm transition-colors flex-shrink-0">📥 下载 SVG</button>
+                </div>
+            </div>
+            <div id="explain-heuristic" class="hidden mb-6 p-5 bg-purple-50 rounded-lg text-sm text-gray-800 border border-purple-100 gemini-response"></div>
+            <div id="heuristic-a-chart" class="mermaid">
+                flowchart TD
+                Start[开始搜索]
+                Init[初始化起点加入OpenList]
+                LoopStart{OpenList为空或超时吗}
+                PopNode[弹出代价最小的节点]
+                CheckSeq{全部出库了吗}
+                TryRetrieve{当前能否直接出库}
+                GenRetState[执行出库生成新状态]
+                GenMoveState[执行翻箱生成新状态]
+                CheckRetClosed{新状态已存在吗}
+                CheckMoveClosed{新状态已存在吗}
+                CalcH1[计算三维特征并加权计算代价H]
+                CalcH2[计算三维特征并加权计算代价H]
+                AddRetOpen[加入OpenList]
+                AddMoveOpen[加入OpenList]
+                EndSuccess[回溯并输出最优路径]
+                EndFail[达到上限返回超时惩罚]
+
+                Start --> Init
+                Init --> LoopStart
+                LoopStart -->|是| EndFail
+                LoopStart -->|否| PopNode
+                PopNode --> CheckSeq
+                CheckSeq -->|是| EndSuccess
+                CheckSeq -->|否| TryRetrieve
+                TryRetrieve -->|能出库| GenRetState
+                GenRetState --> CheckRetClosed
+                CheckRetClosed -->|否| CalcH1
+                CalcH1 --> AddRetOpen
+                AddRetOpen --> LoopStart
+                CheckRetClosed -->|是| LoopStart
+                TryRetrieve -->|需翻箱| GenMoveState
+                GenMoveState --> CheckMoveClosed
+                CheckMoveClosed -->|否| CalcH2
+                CalcH2 --> AddMoveOpen
+                AddMoveOpen --> LoopStart
+                CheckMoveClosed -->|是| LoopStart
+            </div>
+        </section>
+    </div>
+
+    <script>
+        const apiKey = ""; 
+
+        async function fetchGeminiWithRetry(prompt) {
+            const url = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash-preview-09-2025:generateContent?key=${apiKey}`;
+            const payload = { contents: [{ parts: [{ text: prompt }] }] };
+            let delay = 1000;
+            for (let i = 0; i < 5; i++) {
+                try {
+                    const response = await fetch(url, { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(payload) });
+                    if (!response.ok) throw new Error('API Request Failed');
+                    const result = await response.json();
+                    return result.candidates?.[0]?.content?.parts?.[0]?.text;
+                } catch (error) {
+                    if (i === 4) throw error; 
+                    await new Promise(r => setTimeout(r, delay));
+                    delay *= 2; 
+                }
+            }
+        }
+
+        async function explainAlgorithm(algoType, btnElement) {
+            const container = document.getElementById(`explain-${algoType}`);
+            if (container.classList.contains('hidden')) container.classList.remove('hidden');
+
+            const originalHTML = btnElement.innerHTML;
+            btnElement.innerHTML = `思考中...`;
+            btnElement.disabled = true;
+            container.innerHTML = "<div class='text-purple-600 animate-pulse'>Gemini 正在分析该算法，请稍候...</div>";
+
+            const prompts = {
+                'greedy': '请简短解释贪心算法在集装箱倒箱问题中的原理与缺点。',
+                'classic': '请简短解释经典A*算法在倒箱问题中是如何避免陷入死胡同的。',
+                'heuristic': '请解释启发式A*算法加入优先级倒置等特征后为什么更高效。'
+            };
+
+            try {
+                const textResponse = await fetchGeminiWithRetry(prompts[algoType]);
+                container.innerHTML = textResponse ? marked.parse(textResponse) : "<div class='text-red-500'>未能生成解释，请重试。</div>";
+            } catch (error) {
+                container.innerHTML = `<div class='text-red-500'>请求发生错误，请检查网络或API Key。</div>`;
+            } finally {
+                btnElement.innerHTML = originalHTML;
+                btnElement.disabled = false;
+            }
+        }
+    </script>
+</body>
+</html>
