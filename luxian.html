@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <title>技术路线图</title>
+    <script src="https://cdn.jsdelivr.net/npm/mermaid@10.8.0/dist/mermaid.min.js"></script>
+    <script>
+        mermaid.initialize({ startOnLoad: true });
+    </script>
+    <style>
+        body { display: flex; justify-content: center; padding: 40px; background-color: #f8f9fa; }
+    </style>
+</head>
+<body>
+
+    <div class="mermaid">
+    flowchart TD
+        classDef mainBox fill:#f9f9f9,stroke:#333,stroke-width:1px
+        classDef subBox fill:#f0eedf,stroke:#333,stroke-width:1px
+        classDef topBox fill:#ffffff,stroke:#333,stroke-width:1px
+        
+        Top["基于多维特征启发式A*算法的集装箱倒箱问题研究"]:::topBox
+        
+        subgraph S1 [ ]
+            direction TB
+            M1["绪论"]:::mainBox
+            M1 --- C1["研究背景及工程意义"]:::subBox
+            M1 --- C2["国内外研究现状分析"]:::subBox
+        end
+        
+        subgraph S2 [ ]
+            direction TB
+            M2["CRP问题数学与物理建模"]:::mainBox
+            M2 --- C3["堆场环境二维矩阵描述"]:::subBox
+            M2 --- C4["动作空间与状态转移定义"]:::subBox
+            M2 --- C5["目标函数与约束条件确立"]:::subBox
+        end
+
+        subgraph S3 [ ]
+            direction TB
+            M3["多维特征启发式A*算法设计"]:::mainBox
+            M3 --- C6["经典A*算法局限性分析"]:::subBox
+            M3 --- C7["多维空间特征提取与建模"]:::subBox
+            M3 --- C8["复合启发式函数构建与加权"]:::subBox
+        end
+        
+        subgraph S4 [ ]
+            direction TB
+            M4["仿真环境开发与对比实验"]:::mainBox
+            M4 --- C9["Python仿真框架搭建"]:::subBox
+            M4 --- C10["多算法随机场景横向压测"]:::subBox
+            M4 --- C11["饱和度测试与权重消融分析"]:::subBox
+        end
+        
+        Bottom["总结与展望"]:::mainBox
+
+        Top --> S1
+        S1 --> S2
+        S2 --> S3
+        S3 --> S4
+        S4 --> Bottom
+        
+        style S1 fill:none,stroke:#666,stroke-width:1px
+        style S2 fill:none,stroke:#666,stroke-width:1px
+        style S3 fill:none,stroke:#666,stroke-width:1px
+        style S4 fill:none,stroke:#666,stroke-width:1px
+    </div>
+
+</body>
+</html>
