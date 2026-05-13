@@ -55,5 +55,5 @@ Upon completion, a comprehensive `matplotlib` dashboard will appear, displaying 
 You can easily experiment with the feature-guided A* algorithm's behavior by adjusting the heuristic weights. Open `src/config.py` and modify the following parameters:
 
 * `A_WEIGHT`: Weight for Direct Obstructions (Default: ~1.0).
-* `B_WEIGHT`: Weight for Priority Inversions (Recommended to be high, e.g., 6.0).
+* `B_WEIGHT`: Weight for Priority Inversions (Recommended to be 1.0, avoiding over-penalization).
 * `C_WEIGHT`: Weight for Space Scarcity (Default: ~0.5).

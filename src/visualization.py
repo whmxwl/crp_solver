@@ -10,7 +10,7 @@ def plot_evaluation_results(results, num_cnts):
     fig, axs = plt.subplots(2, 2, figsize=(16, 11))
     fig.patch.set_facecolor('#F8F9FA')
     
-    labels = ['基础贪心', '经典 A*', '手动特征 A*']
+    labels = ['基础贪心', '经典 A*', '多维特征 A*']
     colors = ['#FA8072', '#A9A9A9', '#1E90FF'] 
     
     # 提取数据
@@ -26,6 +26,7 @@ def plot_evaluation_results(results, num_cnts):
     axs[0, 0].plot(x_axis, c_a, 's--', color=colors[1], linewidth=2.5, label=labels[1])
     axs[0, 0].plot(x_axis, c_m, '^-', color=colors[2], linewidth=3, label=labels[2])
     axs[0, 0].set_ylabel('单次求解翻箱次数 (次)', fontweight='bold')
+    axs[0, 0].set_xlabel('随机场景编号', fontweight='bold')
     axs[0, 0].set_title('【解的质量】完全公平场景下，寻找最优解的能力对比', fontweight='bold', pad=10)
     axs[0, 0].grid(True, linestyle='--', alpha=0.5)
     axs[0, 0].legend()
@@ -35,6 +36,7 @@ def plot_evaluation_results(results, num_cnts):
     axs[0, 1].plot(x_axis, t_a, 's--', color=colors[1], linewidth=2.5, label=labels[1])
     axs[0, 1].plot(x_axis, t_m, '^-', color=colors[2], linewidth=3, label=labels[2])
     axs[0, 1].set_ylabel('计算耗时 (秒)', fontweight='bold')
+    axs[0, 1].set_xlabel('随机场景编号', fontweight='bold')
     axs[0, 1].set_title('【运算效率】同等求优条件下，维度灾难 vs 特征引导', fontweight='bold', pad=10)
     axs[0, 1].grid(True, linestyle='--', alpha=0.5)
     axs[0, 1].legend()

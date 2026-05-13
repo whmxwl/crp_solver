@@ -9,7 +9,7 @@ class Config:
     A_WEIGHT = 1.0  
     
     # 特征 2：全局优先级倒置数（核心特征：后出的箱子压在了先出的箱子上）
-    B_WEIGHT = 6.0  
+    B_WEIGHT = 1.0  
     
     # 特征 3：空间紧缺度（满载的巷道数量）
     C_WEIGHT = 0.5
