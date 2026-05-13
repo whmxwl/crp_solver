@@ -10,7 +10,7 @@ from src.algorithms import run_a_star
 from src.heuristics import get_manual_heuristic
 
 def run_w3_sensitivity_analysis():
-    print("🚀 开始特征权重 w3 (空间紧缺度) 的敏感性与消融实验...")
+    print("🚀 开始特征参数 w3 (空间紧缺度) 的敏感性与消融实验...")
     
     # 构造一个高满载率场景，逼近空间极限，这样w3的作用才会凸显
     bays, max_height, fill_rate = 5, 5, 0.72 
@@ -33,7 +33,7 @@ def run_w3_sensitivity_analysis():
     results_time = []
     results_cost = []
 
-    # 保持 A(w1) 和 B(w2) 权重不变
+    # 保持 A(w1) 和 B(w2) 参数不变
     original_a = Config.A_WEIGHT
     original_b = Config.B_WEIGHT
     original_c = Config.C_WEIGHT
@@ -70,7 +70,7 @@ def run_w3_sensitivity_analysis():
     # 绘制左侧 Y 轴（计算耗时 - 绿线）
     color1 = '#2E8B57'  # 海洋绿
     # 【已修改】横坐标标签加入 LaTeX 语法 $w_3$
-    ax1.set_xlabel('空间紧缺度特征权重 ($w_3$)', fontweight='bold')
+    ax1.set_xlabel('空间紧缺度特征参数 ($w_3$)', fontweight='bold')
     ax1.set_ylabel('算法求解耗时 (秒)', color=color1, fontweight='bold')
     line1 = ax1.plot(test_weights, results_time, 'o-', color=color1, linewidth=3, label='计算耗时')
     ax1.tick_params(axis='y', labelcolor=color1)
@@ -98,7 +98,7 @@ def run_w3_sensitivity_analysis():
     ax1.legend(lines, labels, loc='upper left', frameon=True, framealpha=0.9, edgecolor='#CCCCCC', borderpad=0.8)
 
     # 【已修改】标题加入 LaTeX 语法 $w_3$
-    plt.title('特征权重 (空间紧缺度 $w_3$) 敏感性与消融分析', fontweight='bold', pad=15)
+    plt.title('特征参数 (空间紧缺度 $w_3$) 敏感性与消融分析', fontweight='bold', pad=15)
     
     fig.tight_layout()
     plt.show()

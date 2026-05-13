@@ -37,7 +37,7 @@ def plot_evaluation_results(results, num_cnts):
     axs[0, 1].plot(x_axis, t_m, '^-', color=colors[2], linewidth=3, label=labels[2])
     axs[0, 1].set_ylabel('计算耗时 (秒)', fontweight='bold')
     axs[0, 1].set_xlabel('随机场景编号', fontweight='bold')
-    axs[0, 1].set_title('【运算效率】同等求优条件下，维度灾难 vs 特征引导', fontweight='bold', pad=10)
+    axs[0, 1].set_title('【运算效率】同等求优条件下，计算时间对比', fontweight='bold', pad=10)
     axs[0, 1].grid(True, linestyle='--', alpha=0.5)
     axs[0, 1].legend()
 
